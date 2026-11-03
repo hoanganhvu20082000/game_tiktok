@@ -12,10 +12,10 @@ export const CONFIG = {
 
   // 4 phe nguyện ước (thay cho 4 đội màu của Đua Vịt)
   teams: {
-    suckhoe:   { name: 'Sức Khỏe',   color: '#4ade80', cmd: ['!suckhoe', '!sk'] },
-    tailoc:    { name: 'Tài Lộc',    color: '#facc15', cmd: ['!tailoc', '!tl'] },
-    tinhduyen: { name: 'Tình Duyên', color: '#f472b6', cmd: ['!tinhduyen', '!td'] },
-    hocvan:    { name: 'Học Vấn',    color: '#60a5fa', cmd: ['!hocvan', '!hv'] },
+    suckhoe:   { name: 'Sức Khỏe',   icon: '🌿', color: '#4ade80', cmd: ['!suckhoe', '!sk'] },
+    tailoc:    { name: 'Tài Lộc',    icon: '🪙', color: '#facc15', cmd: ['!tailoc', '!tl'] },
+    tinhduyen: { name: 'Tình Duyên', icon: '💞', color: '#f472b6', cmd: ['!tinhduyen', '!td'] },
+    hocvan:    { name: 'Học Vấn',    icon: '📚', color: '#60a5fa', cmd: ['!hocvan', '!hv'] },
   },
 
   // Loại chim theo mức quà (diamond = xu TikTok, tính theo tổng streak)
@@ -36,6 +36,19 @@ export const CONFIG = {
 
   // Người đã góp >= mức này (tổng xu các phiên) được chào đón VIP khi vào phòng
   vipEntranceDiamonds: 500,
+
+  // ---------- Tương tác giữa người xem ----------
+  // !tang @ten <lời chúc>: gửi thư chim cho người khác. Quà tặng trong 60s sau đó được ghi "dành tặng" người đó.
+  letterPoints: 2,
+  dedicateSeconds: 60,
+  // !chuc @ten: chúc phúc lời nguyện của người khác. Điểm cộng cho PHE NGƯỜI ĐƯỢC CHÚC (mỗi cặp 1 lần/đợt).
+  blessPoints: 3,
+  // Trên Bức Tường Lời Nguyện: mỗi lời chúc nhận được = bao nhiêu điểm xếp hạng
+  blessWallWeight: 10,
+  // Chim Vàng: thỉnh thoảng bay ngang màn hình, ai gõ !bat đầu tiên thì bắt được
+  golden: { firstDelaySec: 30, minGapSec: 45, maxGapSec: 75, seconds: 10, points: 80 },
+  // Combo cả phòng: càng nhiều NGƯỜI KHÁC NHAU thả chim trong 10s, điểm càng được nhân
+  combo: { windowSec: 10, usersPerStep: 5, stepBonus: 0.1, maxMult: 2 },
 
   // Mùa thi (dương lịch, tháng-ngày). Mặc định bao kỳ thi tốt nghiệp THPT.
   examSeason: { from: '06-01', to: '07-10' },

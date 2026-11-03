@@ -25,6 +25,7 @@
 <button onclick="admin('reset')">🔄 Bắt đầu đợt mới</button>
 <button onclick="admin('end')">⏹ Kết thúc ngay (hiện Bức Tường Lời Nguyện)</button>
 <button onclick="admin('blessing')">🌈 Mưa Phúc Lành</button>
+<button onclick="admin('golden')">🐦 Thả Chim Vàng ngay</button>
 
 <h2>Sự kiện theo ngày</h2>
 <select id="eventSel"></select>
@@ -54,6 +55,13 @@ Tên viewer: <input id="name" value="viewer_01">
   <button onclick="sim('chat',{comment:'!tha Cầu cho mẹ khỏe mạnh'})">!tha + lời nguyện</button>
 </div>
 <div>
+  Người nhận: <input id="target" value="viewer_02" style="width:140px">
+  <button onclick="sim('chat',{comment:'!tang @'+tgt()+' Chúc bạn thi tốt nhé'})">💌 !tang @người nhận</button>
+  <button onclick="sim('chat',{comment:'!chuc @'+tgt()})">✨ !chuc @người nhận</button>
+  <button onclick="sim('chat',{comment:'!bat'})">🐦 !bat</button>
+  <span class="muted">Người nhận phải từng tương tác (bấm vài nút với tên đó trước).</span>
+</div>
+<div>
   <button onclick="sim('like',{value:15})">❤️ 15 tim</button>
   <button onclick="sim('follow')">➕ Follow</button>
   <button onclick="sim('share')">↗ Share</button>
@@ -72,6 +80,7 @@ const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Typ
 const admin = (cmd, arg) => post('/api/admin/' + cmd, { arg });
 const sim = (type, extra = {}) => post('/api/sim', { type, name: document.getElementById('name').value, ...extra });
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const tgt = () => document.getElementById('target').value.trim();
 const music = (on) => admin('music', { on, volume: Number(document.getElementById('vol').value) });
 document.getElementById('vol').oninput = () => music(true);
 
@@ -103,10 +112,15 @@ function toggleAuto() {
   btn.textContent = '⏸ Tắt bot';
   const teams = ['!suckhoe', '!tailoc', '!tinhduyen', '!hocvan'];
   const wishes = ['Gia đình bình an', 'Thi đỗ đại học', 'Buôn may bán đắt', 'Sớm có người yêu', 'Ba mẹ mạnh khỏe', 'Con cái ngoan ngoãn', 'Qua môn toán'];
+  const notes = ['Chúc bạn thi tốt', 'Mãi bên nhau nhé', 'Bình an nha', 'Cảm ơn bạn'];
   autoTimer = setInterval(() => {
     const name = 'bot_' + Math.floor(Math.random() * 200);
+    const other = 'bot_' + Math.floor(Math.random() * 200);
     const r = Math.random();
-    if (r < 0.15) post('/api/sim', { type: 'chat', name, comment: teams[Math.floor(Math.random() * 4)] });
+    if (r < 0.12) post('/api/sim', { type: 'chat', name, comment: teams[Math.floor(Math.random() * 4)] });
+    else if (r < 0.15) post('/api/sim', { type: 'chat', name, comment: `!tang @${other} ${notes[Math.floor(Math.random() * notes.length)]}` });
+    else if (r < 0.2) post('/api/sim', { type: 'chat', name, comment: `!chuc @${other}` });
+    else if (r < 0.22) post('/api/sim', { type: 'chat', name, comment: '!bat' });
     else if (r < 0.35) post('/api/sim', { type: 'chat', name, comment: '!tha ' + wishes[Math.floor(Math.random() * wishes.length)] });
     else if (r < 0.9) post('/api/sim', { type: 'like', name, value: 15 });
     else if (r < 0.98) post('/api/sim', { type: 'gift', name, value: [1, 1, 5, 10][Math.floor(Math.random() * 4)] });

@@ -3,35 +3,72 @@
 <head>
 <meta charset="utf-8">
 <title>Phóng Sanh Chim - Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="overlay.css">
 </head>
 <body>
+<!-- Lớp nền (trời, núi, mây) chỉ hiện khi ?bg=1; OBS có thể bật/tắt bằng ?bg=0 để ghép camera -->
+<canvas id="sky" width="1080" height="1920"></canvas>
 <canvas id="c" width="1080" height="1920"></canvas>
 <div id="lottie"></div>
 
-<div id="hud">
-  <div id="title">🕊️ PHÓNG SANH CHIM 🕊️</div>
-  <div id="eventBar"></div>
-  <div id="timer">--:--</div>
-  <div class="teams" id="teams"></div>
-  <div id="meterWrap"><div id="meter"></div><div id="meterLbl">Bầu Trời Bình An</div></div>
-</div>
-<div id="donors"><h3>🌟 Người Gieo Phúc</h3><div id="donorList"></div></div>
+<!-- ===== Header ===== -->
+<header id="top">
+  <div id="brand">
+    <div class="logo">🕊️</div>
+    <div>
+      <div class="title">Phóng Sanh Chim</div>
+      <div class="sub" id="eventBar">Thả chim gửi nguyện ước</div>
+    </div>
+    <div id="timer"><span id="timerTxt">3:00</span><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19"/><circle id="timerArc" cx="22" cy="22" r="19"/></svg></div>
+  </div>
+
+  <!-- Đua 4 phe: thanh ngang tỉ lệ điểm -->
+  <div id="race"></div>
+  <div id="teams"></div>
+
+  <!-- Thanh mục tiêu chung -->
+  <div id="sky-meter">
+    <div class="meter-fill" id="meter"></div>
+    <div class="meter-lbl"><span>☁️ Bầu Trời Bình An</span><b id="meterTxt">0 / 2000</b></div>
+  </div>
+</header>
+
+<!-- ===== Combo cả phòng ===== -->
+<div id="combo"><div class="c-mult" id="comboMult">x1.0</div><div class="c-lbl">COMBO CẢ PHÒNG</div><div class="c-users" id="comboUsers">0 người</div><div class="c-ring"><i id="comboBar"></i></div></div>
+
+<!-- ===== Bảng người gieo phúc ===== -->
+<aside id="donors"><div class="h">🌟 Người Gieo Phúc</div><div id="donorList"></div></aside>
+
+<!-- ===== Chim Vàng ===== -->
+<div id="golden"><div class="g-cd" id="goldenCd">10</div><div class="g-txt">CHIM VÀNG XUẤT HIỆN!<br><b>Gõ !bat để bắt</b></div></div>
+
+<!-- ===== Dòng sự kiện ===== -->
 <div id="feed"></div>
+
+<!-- ===== Toast tương tác giữa người xem ===== -->
+<div id="toasts"></div>
+
+<!-- ===== Spotlight ===== -->
 <div id="banner"></div>
 
+<!-- ===== Bức Tường Lời Nguyện ===== -->
 <div id="wall">
-  <h1>🕯️ BỨC TƯỜNG LỜI NGUYỆN 🕯️</h1>
-  <div id="wallWinner"></div>
-  <div id="wallList"></div>
-  <div id="wallFoot"></div>
+  <div class="wall-in">
+    <div class="wall-title">Bức Tường Lời Nguyện</div>
+    <div id="wallWinner"></div>
+    <div id="wallList"></div>
+    <div id="wallFoot"></div>
+  </div>
 </div>
 
-<div id="help">
-  Chọn nguyện ước: <b>!suckhoe</b> · <b>!tailoc</b> · <b>!tinhduyen</b> · <b>!hocvan</b><br>
-  <b>!tha &lt;lời nguyện&gt;</b> để thả chim · ❤️ 15 tim = 1 chim sẻ · 🎁 Quà = Bồ Câu / Hạc / Phượng Hoàng
-</div>
+<!-- ===== Hướng dẫn lệnh (xoay vòng) ===== -->
+<footer id="help">
+  <div class="cmds" id="cmds"></div>
+</footer>
 <div id="soundHint">🔈 Bấm vào màn hình để bật âm thanh</div>
+
 <script src="/vendor/lottie/lottie.min.js"></script>
 <script type="module" src="overlay.js"></script>
 </body>

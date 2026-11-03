@@ -28,6 +28,17 @@ Người xem "thả chim về trời" bằng tương tác. Mỗi con chim mang t
 | Quà 100–499 xu | 1 Hạc Tiên + spotlight 3s | 120 |
 | Quà ≥ 500 xu | 1 Phượng Hoàng + spotlight 5s, TTS ngắt hàng đợi | 700 |
 
+**Tương tác giữa người xem với nhau:**
+
+| Lệnh | Tác dụng |
+|---|---|
+| `!tang @tên <lời chúc>` | Bồ câu ngậm thư bay từ avatar người gửi sang avatar người nhận, kèm lời chúc. Quà tặng trong 60s sau đó được ghi "dành tặng" người đó trên spotlight. |
+| `!chuc @tên` | Chúc phúc người khác: cộng điểm cho **phe của người được chúc** (chúc cả phe khác vẫn có ý nghĩa). Mỗi cặp 1 lần/đợt. Lời chúc nhận được đẩy lời nguyện lên cao trên Bức Tường. |
+| `!bat` | Chim Vàng bay ngang màn hình mỗi 45–75s, ai gõ `!bat` đầu tiên được +80 điểm phúc cho phe mình. |
+| Combo cả phòng | Càng nhiều **người khác nhau** thả chim trong 10s, điểm của mọi người càng được nhân (tối đa x2). |
+
+`@tên` khớp theo username hoặc nickname TikTok (không phân biệt dấu, khoảng trắng). Người được @ phải đã từng comment/tim/vào phòng để hệ thống biết tên.
+
 Lý do concept này khác biệt: Đua Vịt kích cầu bằng cạnh tranh. Phóng Sanh Chim kích cầu bằng cảm xúc (lời nguyện cho gia đình, thi cử) và mục tiêu chung (thanh Bầu Trời), hợp với khung giờ tối, ngày rằm, mùng 1, mùa thi, Tết.
 
 ## 2. Chạy thử
