@@ -1,0 +1,14 @@
+{
+  "_note": "Sprite sheet xếp ngang. Thay src bằng PNG của designer (giữ đúng frames/frameW/frameH). spotlightLottie: đường dẫn file Lottie JSON phát khi có Hạc/Phượng Hoàng, để trống nếu chưa có.",
+  "birds": {
+    "se":          { "src": "assets/birds/se.svg",          "frames": 6, "frameW": 128, "frameH": 128, "fps": 14 },
+    "bocau":       { "src": "assets/birds/bocau.svg",       "frames": 6, "frameW": 128, "frameH": 128, "fps": 11 },
+    "hac":         { "src": "assets/birds/hac.svg",         "frames": 6, "frameW": 128, "frameH": 128, "fps": 8 },
+    "phuonghoang": { "src": "assets/birds/phuonghoang.svg", "frames": 6, "frameW": 128, "frameH": 128, "fps": 7 }
+  },
+  "spotlightLottie": {
+    "hac": "",
+    "phuonghoang": ""
+  },
+  "music": ""
+}

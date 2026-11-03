@@ -1,0 +1,19 @@
+{
+  "name": "phong-sanh-chim-tiktok",
+  "version": "0.1.0",
+  "description": "TikTok LIVE interactive overlay: Phóng Sanh Chim (virtual bird release)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "lottie-web": "^5.13.0",
+    "tiktok-live-connector": "^2.5.0",
+    "ws": "^8.18.0"
+  }
+}

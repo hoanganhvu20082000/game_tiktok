@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Phóng Sanh Chim - Overlay</title>
+<link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="lottie"></div>
+
+<div id="hud">
+  <div id="title">🕊️ PHÓNG SANH CHIM 🕊️</div>
+  <div id="eventBar"></div>
+  <div id="timer">--:--</div>
+  <div class="teams" id="teams"></div>
+  <div id="meterWrap"><div id="meter"></div><div id="meterLbl">Bầu Trời Bình An</div></div>
+</div>
+<div id="donors"><h3>🌟 Người Gieo Phúc</h3><div id="donorList"></div></div>
+<div id="feed"></div>
+<div id="banner"></div>
+
+<div id="wall">
+  <h1>🕯️ BỨC TƯỜNG LỜI NGUYỆN 🕯️</h1>
+  <div id="wallWinner"></div>
+  <div id="wallList"></div>
+  <div id="wallFoot"></div>
+</div>
+
+<div id="help">
+  Chọn nguyện ước: <b>!suckhoe</b> · <b>!tailoc</b> · <b>!tinhduyen</b> · <b>!hocvan</b><br>
+  <b>!tha &lt;lời nguyện&gt;</b> để thả chim · ❤️ 15 tim = 1 chim sẻ · 🎁 Quà = Bồ Câu / Hạc / Phượng Hoàng
+</div>
+<div id="soundHint">🔈 Bấm vào màn hình để bật âm thanh</div>
+<script src="/vendor/lottie/lottie.min.js"></script>
+<script type="module" src="overlay.js"></script>
+</body>
+</html>

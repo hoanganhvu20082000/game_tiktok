@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Phóng Sanh Chim - Admin</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #111827; color: #e5e7eb; padding: 24px; max-width: 820px; }
+  h2 { margin-top: 28px; border-bottom: 1px solid #374151; padding-bottom: 6px; }
+  button { padding: 10px 16px; margin: 4px; border: 0; border-radius: 8px; background: #374151; color: #fff; cursor: pointer; font-size: 15px; }
+  button:hover { background: #4b5563; }
+  input, select { padding: 8px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: #fff; font-size: 15px; }
+  #auto { background: #065f46; }
+  .info { background: #1f2937; padding: 12px 16px; border-radius: 8px; line-height: 1.7; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  td { padding: 6px; border-bottom: 1px solid #374151; }
+  .muted { color: #9ca3af; }
+</style>
+</head>
+<body>
+<h1>🕊️ Bảng điều khiển MC</h1>
+<p>Overlay OBS: <code>http://localhost:3000/overlay.html</code> (thêm <code>?bg=1</code> để xem có nền trời)</p>
+<div class="info" id="info">Đang tải...</div>
+
+<h2>Điều khiển đợt</h2>
+<button onclick="admin('reset')">🔄 Bắt đầu đợt mới</button>
+<button onclick="admin('end')">⏹ Kết thúc ngay (hiện Bức Tường Lời Nguyện)</button>
+<button onclick="admin('blessing')">🌈 Mưa Phúc Lành</button>
+
+<h2>Sự kiện theo ngày</h2>
+<select id="eventSel"></select>
+<button onclick="admin('event', document.getElementById('eventSel').value).then(load)">Áp dụng (bắt đầu đợt mới)</button>
+<p class="muted">"Tự động" chọn theo lịch âm/dương hôm nay. Chọn sự kiện cụ thể để test hoặc chạy sớm.</p>
+
+<h2>Âm thanh</h2>
+Nhạc thiền: <input type="range" id="vol" min="0" max="1" step="0.05" value="0.35">
+<button onclick="music(true)">🔊 Bật</button>
+<button onclick="music(false)">🔇 Tắt</button>
+<div style="margin-top:8px">
+  <input id="sayText" style="width:520px" placeholder="MC gõ câu để giọng đọc phát lên live">
+  <button onclick="post('/api/admin/say',{text:document.getElementById('sayText').value})">🗣 Đọc</button>
+</div>
+
+<h2>Lời nguyện đợt này</h2>
+<p class="muted">Bấm "Ẩn" để gỡ lời nguyện không phù hợp. Người đó sẽ không hiện lời nguyện nữa cho đến khi khởi động lại server.</p>
+<table id="wishes"></table>
+
+<h2>Giả lập sự kiện (test không cần live)</h2>
+Tên viewer: <input id="name" value="viewer_01">
+<div>
+  <button onclick="sim('chat',{comment:'!suckhoe'})">!suckhoe</button>
+  <button onclick="sim('chat',{comment:'!tailoc'})">!tailoc</button>
+  <button onclick="sim('chat',{comment:'!tinhduyen'})">!tinhduyen</button>
+  <button onclick="sim('chat',{comment:'!hocvan'})">!hocvan</button>
+  <button onclick="sim('chat',{comment:'!tha Cầu cho mẹ khỏe mạnh'})">!tha + lời nguyện</button>
+</div>
+<div>
+  <button onclick="sim('like',{value:15})">❤️ 15 tim</button>
+  <button onclick="sim('follow')">➕ Follow</button>
+  <button onclick="sim('share')">↗ Share</button>
+  <button onclick="sim('member')">🚪 Vào phòng</button>
+</div>
+<div>
+  <button onclick="sim('gift',{value:1})">🌹 1 xu</button>
+  <button onclick="sim('gift',{value:10})">🍦 10 xu (Bồ Câu)</button>
+  <button onclick="sim('gift',{value:100})">🐶 100 xu (Hạc)</button>
+  <button onclick="sim('gift',{value:500})">🦁 500 xu (Phượng Hoàng)</button>
+</div>
+<div><button id="auto" onclick="toggleAuto()">▶ Bật bot giả lập đông người</button></div>
+
+<script>
+const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+const admin = (cmd, arg) => post('/api/admin/' + cmd, { arg });
+const sim = (type, extra = {}) => post('/api/sim', { type, name: document.getElementById('name').value, ...extra });
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const music = (on) => admin('music', { on, volume: Number(document.getElementById('vol').value) });
+document.getElementById('vol').oninput = () => music(true);
+
+let eventsLoaded = false;
+async function load() {
+  const d = await fetch('/api/admin/info').then((r) => r.json());
+  const ttsLabel = { browser: 'Giọng trình duyệt (chưa cấu hình FPT/Azure)', fpt: 'FPT.AI', azure: 'Azure Speech' }[d.tts];
+  document.getElementById('info').innerHTML =
+    `📅 Hôm nay: <b>${esc(d.lunar)}</b><br>🎉 Sự kiện: <b>${esc(d.current?.name || 'Không có')}</b> (chế độ: ${esc(d.override)})<br>🗣 Giọng đọc: <b>${ttsLabel}</b>`;
+  if (!eventsLoaded) {
+    const sel = document.getElementById('eventSel');
+    sel.innerHTML = '<option value="auto">Tự động theo lịch</option><option value="none">Tắt sự kiện</option>' +
+      d.events.map((e) => `<option value="${e.id}">${esc(e.name)}</option>`).join('');
+    sel.value = d.override;
+    eventsLoaded = true;
+  }
+  document.getElementById('wishes').innerHTML = d.wishes.length
+    ? d.wishes.slice(-30).reverse().map((w) => `<tr><td>${esc(w.name)}</td><td>“${esc(w.wish)}”</td><td>${w.points}✨</td>
+        <td><button onclick="admin('hide-wish','${esc(w.id).replace(/'/g, '')}').then(load)">Ẩn</button></td></tr>`).join('')
+    : '<tr><td class="muted">Chưa có lời nguyện</td></tr>';
+}
+load();
+setInterval(load, 3000);
+
+let autoTimer = null;
+function toggleAuto() {
+  const btn = document.getElementById('auto');
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; btn.textContent = '▶ Bật bot giả lập đông người'; return; }
+  btn.textContent = '⏸ Tắt bot';
+  const teams = ['!suckhoe', '!tailoc', '!tinhduyen', '!hocvan'];
+  const wishes = ['Gia đình bình an', 'Thi đỗ đại học', 'Buôn may bán đắt', 'Sớm có người yêu', 'Ba mẹ mạnh khỏe', 'Con cái ngoan ngoãn', 'Qua môn toán'];
+  autoTimer = setInterval(() => {
+    const name = 'bot_' + Math.floor(Math.random() * 200);
+    const r = Math.random();
+    if (r < 0.15) post('/api/sim', { type: 'chat', name, comment: teams[Math.floor(Math.random() * 4)] });
+    else if (r < 0.35) post('/api/sim', { type: 'chat', name, comment: '!tha ' + wishes[Math.floor(Math.random() * wishes.length)] });
+    else if (r < 0.9) post('/api/sim', { type: 'like', name, value: 15 });
+    else if (r < 0.98) post('/api/sim', { type: 'gift', name, value: [1, 1, 5, 10][Math.floor(Math.random() * 4)] });
+    else post('/api/sim', { type: 'gift', name, value: [100, 500][Math.floor(Math.random() * 2)] });
+  }, 250);
+}
+</script>
+</body>
+</html>
