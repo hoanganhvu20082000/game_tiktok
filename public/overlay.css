@@ -5,7 +5,10 @@
   --font: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: var(--font); color: #fff; background: transparent; }
+/* html = cửa sổ nguồn (kích thước bất kỳ); body = khung game cố định 1080x1920, fit.js co giãn cho vừa */
+html { margin: 0; width: 100vw; height: 100vh; overflow: hidden; background: transparent; }
+body { margin: 0; position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; transform-origin: 0 0;
+       font-family: var(--font); color: #fff; background: transparent; }
 body:not(.bg) #sky { display: none; }
 canvas, #lottie { position: absolute; inset: 0; }
 #lottie { pointer-events: none; z-index: 20; }
