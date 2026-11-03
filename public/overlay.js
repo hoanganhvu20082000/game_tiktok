@@ -31,7 +31,8 @@ function hueOf(s) {
 function avatarImage(u) {
   if (!u?.avatar) return null;
   if (!avatarCache.has(u.avatar)) {
-    const img = new Image(); img.crossOrigin = 'anonymous'; img.src = u.avatar;
+    // Không đặt crossOrigin: CDN TikTok không trả header CORS, đặt vào thì ảnh không tải được. Overlay chỉ vẽ, không đọc pixel.
+    const img = new Image(); img.src = u.avatar;
     avatarCache.set(u.avatar, img);
     if (avatarCache.size > 300) avatarCache.delete(avatarCache.keys().next().value);
   }

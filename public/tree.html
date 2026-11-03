@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Cây Thông Kết Nối - Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800;900&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tree.css">
+</head>
+<body>
+<!-- Lớp vẽ: nền đêm tuyết (chỉ khi ?bg=1) / cây + dây + quả châu / hiệu ứng -->
+<canvas id="bg" width="1080" height="1920"></canvas>
+<canvas id="scene" width="1080" height="1920"></canvas>
+<canvas id="fx" width="1080" height="1920"></canvas>
+
+<!-- ===== Header ===== -->
+<header id="top">
+  <div class="brand">
+    <div class="title">Cây Thông Kết Nối</div>
+    <div class="treeNo" id="treeNo">Cây số 1</div>
+  </div>
+  <div class="bar">
+    <div class="bar-fill" id="barFill"></div>
+    <div class="bar-marks"><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div>
+    <div class="bar-lbl"><span id="barPct">0%</span><b id="barTxt">0 / 60 ✨</b></div>
+  </div>
+  <div class="titles" id="titles"></div>
+</header>
+
+<!-- ===== Cột trái: số liệu + combo ===== -->
+<aside id="side">
+  <div class="stat"><b id="sPeople">0</b><span>quả châu</span></div>
+  <div class="stat"><b id="sWires">0</b><span>dây đèn</span></div>
+  <div class="stat cold"><b id="sLonely">0</b><span>đang lạnh 🥶</span></div>
+  <div class="combo" id="combo"><b id="comboMult">x1.0</b><span>combo</span></div>
+</aside>
+
+<!-- ===== Sự kiện đặc biệt ===== -->
+<div id="golden" class="chip gold">⏰ GIỜ VÀNG x2 · <b id="goldenCd">5:00</b></div>
+<div id="mystery" class="chip mys">🎁 HỘP QUÀ BÍ ẨN · gõ <b>!mo</b> · <b id="mysCd">15</b>s</div>
+<div id="warm" class="chip warm">🔥 SƯỞI ẤM quả châu <b id="warmNum">#0</b> · gõ <b id="warmCmd">!noi 0</b> · <b id="warmCd">20</b>s</div>
+<div id="chorus" class="chip chorus">🎶 Hợp xướng <b id="chorusN">0/8</b> · gõ <b>Merry Christmas</b></div>
+
+<!-- ===== Thông báo ===== -->
+<div id="toasts"></div>
+<div id="spot"></div>
+
+<!-- ===== Bừng sáng ===== -->
+<div id="lit">
+  <div class="lit-in">
+    <div class="lit-title">Cây Thông Đã Bừng Sáng!</div>
+    <div class="lit-sum" id="litSum"></div>
+    <div class="lit-titles" id="litTitles"></div>
+    <div class="lit-wishes" id="litWishes"></div>
+    <div class="lit-foot" id="litFoot"></div>
+  </div>
+</div>
+
+<!-- ===== Hướng dẫn ===== -->
+<footer id="help">
+  <div class="tip" id="tip"></div>
+  <div class="cmds">
+    <div><b>!noi 12</b>nối dây tới quả châu số 12</div>
+    <div><b>!noi @tên</b>nối theo tên · thêm lời chúc phía sau</div>
+    <div><b>!uoc …</b>treo điều ước lên quả châu</div>
+    <div><b>!so</b>tìm quả châu của bạn</div>
+  </div>
+</footer>
+<div id="soundHint">🔈 Bấm vào màn hình để bật âm thanh</div>
+
+<script type="module" src="tree.js"></script>
+</body>
+</html>

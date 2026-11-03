@@ -6,13 +6,18 @@ import { WebSocketServer } from 'ws';
 import { TikTokLiveConnection, WebcastEvent } from 'tiktok-live-connector';
 import { CONFIG } from './config.js';
 import { Game } from './game.js';
+import { TreeGame } from './tree_game.js';
 import { EVENTS } from './events.js';
 import { synthesize, ttsProvider } from './tts.js';
 
 // Cách chạy:
-//   node server.js                -> chế độ giả lập (không cần đang live), bấm nút trên /admin.html
-//   node server.js <tiktok_user>  -> kết nối phòng live thật của @tiktok_user
-const tiktokUser = process.argv[2];
+//   node server.js                            -> Phóng Sanh Chim, chế độ giả lập (bấm nút trên /admin.html)
+//   node server.js <tiktok_user>              -> Phóng Sanh Chim, nối phòng live thật
+//   node server.js [tiktok_user] --mode=tree  -> Cây Thông Kết Nối (overlay /tree.html, admin /tree_admin.html)
+const args = process.argv.slice(2);
+const MODE = (args.find((a) => a.startsWith('--mode=')) || '--mode=bird').split('=')[1];
+const tiktokUser = args.find((a) => !a.startsWith('--'));
+const PAGES = MODE === 'tree' ? { overlay: 'tree.html', admin: 'tree_admin.html' } : { overlay: 'overlay.html', admin: 'admin.html' };
 
 const app = express();
 app.use(express.static('public'));
@@ -22,6 +27,10 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+// Overlay mở lại giữa chừng (OBS khởi động lại) nhận ngay toàn bộ cây
+wss.on('connection', (ws) => {
+  if (game.fullState) ws.send(JSON.stringify(game.fullState()));
+});
 
 function broadcast(msg) {
   const data = JSON.stringify(msg);
@@ -40,7 +49,7 @@ async function say(text, priority = 3) {
   }
 }
 
-const game = new Game(broadcast, say);
+const game = MODE === 'tree' ? new TreeGame(broadcast, say) : new Game(broadcast, say);
 
 // ---------- Admin API (chỉ lắng nghe localhost, xem listen bên dưới) ----------
 app.post('/api/admin/:cmd', (req, res) => {
@@ -49,7 +58,9 @@ app.post('/api/admin/:cmd', (req, res) => {
 });
 
 app.get('/api/admin/info', (req, res) => {
+  if (game.adminInfo) return res.json({ tts: ttsProvider(), ...game.adminInfo() });
   res.json({
+    mode: 'bird',
     tts: ttsProvider(),
     events: EVENTS.map((e) => ({ id: e.id, name: e.name })),
     override: game.eventOverride,
@@ -127,8 +138,9 @@ function startTikTok(username) {
 }
 
 server.listen(CONFIG.port, '127.0.0.1', () => {
-  console.log(`Overlay: http://localhost:${CONFIG.port}/overlay.html (Browser Source 1080x1920)`);
-  console.log(`Admin  : http://localhost:${CONFIG.port}/admin.html`);
+  console.log(`Chế độ : ${MODE === 'tree' ? 'Cây Thông Kết Nối' : 'Phóng Sanh Chim'}`);
+  console.log(`Overlay: http://localhost:${CONFIG.port}/${PAGES.overlay} (Browser Source 1080x1920)`);
+  console.log(`Admin  : http://localhost:${CONFIG.port}/${PAGES.admin}`);
   console.log(`Giọng đọc: ${ttsProvider()}`);
   if (tiktokUser) startTikTok(tiktokUser);
   else console.log('Chế độ giả lập. Chạy "node server.js <tiktok_username>" để nối live thật.');

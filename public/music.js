@@ -46,8 +46,21 @@ export class ZenMusic {
 
   // Theme đổi chủ âm: Tết vui hơn, Vu Lan trầm hơn
   setTheme(theme) {
-    const roots = { tet: 196.0, trungthu: 174.61, vulan: 130.81, love: 164.81, muathi: 146.83, ram: 138.59 };
+    const roots = { tet: 196.0, trungthu: 174.61, vulan: 130.81, love: 164.81, muathi: 146.83, ram: 138.59, xmas: 220.0 };
     this.root = roots[theme] || 146.83;
+  }
+
+  // Một tiếng chuông nhỏ, cao độ ngẫu nhiên trong âm giai: nhiều dây nối liên tiếp nghe thành giai điệu
+  ting(gain = 0.08) {
+    if (!this.ctx || !this.enabled) return;
+    const semi = this.scale[Math.floor(Math.random() * this.scale.length)] + 12 + (Math.random() < 0.4 ? 12 : 0);
+    this.#bowl(this.#freq(semi), gain, 2.2);
+  }
+
+  // Lục lạc tuần lộc: chuỗi ting nhanh
+  jingle() {
+    if (!this.ctx || !this.enabled) return;
+    for (let i = 0; i < 10; i++) setTimeout(() => this.#bowl(this.#freq(24 + (i % 2) * 7), 0.05, 0.6), i * 70);
   }
 
   // Âm "ting" nhẹ khi có chim lớn được thả (dùng chung reverb)

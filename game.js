@@ -8,12 +8,12 @@ const HOF_FILE = path.resolve('data', 'hall_of_fame.json');
 // Lọc từ ngữ thô tục trong lời nguyện / lời chúc trước khi hiển thị lên live.
 const BANNED = ['dm', 'dcm', 'vcl', 'vl', 'cc', 'lon', 'cac', 'dit', 'fuck', 'shit'];
 
-function normalize(s) {
+export function normalize(s) {
   return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'd').toLowerCase();
 }
 
 // Khóa tra cứu tên khi người xem gõ @ten: bỏ dấu, bỏ khoảng trắng
-function nameKey(s) {
+export function nameKey(s) {
   return normalize(String(s || '').replace(/^@/, '')).replace(/\s+/g, '');
 }
 

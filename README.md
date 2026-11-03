@@ -41,6 +41,49 @@ Người xem "thả chim về trời" bằng tương tác. Mỗi con chim mang t
 
 Lý do concept này khác biệt: Đua Vịt kích cầu bằng cạnh tranh. Phóng Sanh Chim kích cầu bằng cảm xúc (lời nguyện cho gia đình, thi cử) và mục tiêu chung (thanh Bầu Trời), hợp với khung giờ tối, ngày rằm, mùng 1, mùa thi, Tết.
 
+## 1b. Chế độ Giáng sinh: 🎄 Cây Thông Kết Nối
+
+```bash
+node server.js --mode=tree                 # giả lập
+node server.js <tiktok_user> --mode=tree   # live thật
+```
+Overlay `http://localhost:3000/tree.html` (`?bg=1` có nền đêm tuyết) · Admin `http://localhost:3000/tree_admin.html`.
+Thiết kế đầy đủ: [docs/cay_thong_ket_noi_design.md](docs/cay_thong_ket_noi_design.md).
+
+**Luật chơi**
+
+| Lệnh / tương tác | Kết quả |
+|---|---|
+| Bất kỳ tương tác (tim, comment, follow, quà) | Treo 1 quả châu có avatar và **số cố định** `#12` |
+| `!noi 12` hoặc `!noi @tên` (+ lời chúc) | Kéo dây đèn tới quả châu đó. Mỗi người **5 dây miễn phí** mỗi cây |
+| Người kia nối lại | **Dây đôi**: sáng 3 (gấp 3 dây đơn) |
+| 3 người nối đôi với nhau | **Chòm sao** +5 |
+| Nối đầu tiên tới quả châu đóng băng 🥶 | +2 thưởng, danh hiệu **Người Sưởi Ấm** |
+| `!cat 12` | Cắt dây của số 12 nối tới mình (không thông báo công khai), người đó không nối lại được |
+| `!uoc <điều ước>` | Treo điều ước lên quả châu của mình |
+| `!so` | Quả châu của mình nhấp nháy để tìm |
+| Follow / share / quà | Thêm dây: follow +2, share +1, mỗi xu +1 (tối đa +30 mỗi lần) |
+
+**Tầng trên cây** (khan hiếm dần lên trên): tầng 1 ai cũng có (58 chỗ) · tầng 2 ≥1 xu **hoặc nối ≥3 dây** (24) · tầng 3 ≥30 xu (15) · tầng 4 ≥300 xu (6) · **Ngôi sao** = tặng nhiều nhất, tối thiểu 500 xu. Tầng 1 đầy thì người im lặng chưa có dây rơi xuống đống hộp quà dưới gốc, tương tác lại được treo lại.
+
+**Quà làm điều tốt cho người khác:** ≥10 xu nối **dây vàng** tới 3 quả châu cô đơn · ≥100 xu **bông tuyết may mắn** sưởi ấm 10 quả châu · ≥500 xu **Ông Già Noel** bay ngang cây thả quà cho những người đang nối với người tặng (+50 ánh sáng).
+
+**Mục tiêu chung:** thanh ánh sáng, mục tiêu tự co giãn theo số người (cây 1: 2 × số người, tối thiểu 60). Mốc 25/50/75% đèn quấn cây bật từng tầng. 100% = **bừng sáng**: pháo hoa, màn hình vinh danh ⭐ Ngôi Sao · 💞 Trái Tim Của Cây (nhiều dây đôi nhất) · 🔥 Người Sưởi Ấm · ❄️ Người Thắp Đèn Cuối, giữ 30s để chụp màn hình rồi sang **Cây số 2** (khó hơn, dây được làm mới).
+
+**Sự kiện phụ để giữ nhịp**
+
+| Sự kiện | Cách kích hoạt | Tác dụng |
+|---|---|---|
+| 🎁 Hộp Quà Bí Ẩn | Tự động mỗi 1,5–2,5 phút, hoặc MC bấm | Ai gõ `!mo` đầu tiên được ngẫu nhiên: +15 ánh sáng, +3 dây, hoặc bông tuyết cho 5 người |
+| 🔥 Thử thách Sưởi Ấm | Tự động mỗi 2,5 phút | Chọn 1 quả châu cô đơn, 20s mỗi dây nối tới bạn ấy +2 |
+| 🎶 Hợp xướng | 8 người khác nhau gõ "Merry Christmas" / "Giáng sinh vui vẻ" trong 20s | +20 ánh sáng cả cây |
+| ⏰ Giờ Vàng | MC bấm | 5 phút ánh sáng x2 |
+| Combo cả phòng | Nhiều người khác nhau tương tác trong 10s | Ánh sáng nhân tới x2 |
+
+Mỗi buổi live ghi chỉ số (% người có dây, % dây được nối lại, comment/phút, thời gian thắp mỗi cây) vào `data/sessions/` để chỉnh hệ số trong `config.js` → `tree`.
+
+Kiểm tra luật chơi: chạy server với `TREE_WIRE_COOLDOWN_MS=0 TREE_LIT_HOLD_SEC=2 TREE_GOAL_MIN=100000 PORT=3056 node server.js --mode=tree`, rồi `PORT=3056 node scripts/tree_test.js` (30 kiểm tra).
+
 ## 2. Chạy thử
 
 ```bash
