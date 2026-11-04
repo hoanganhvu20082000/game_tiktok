@@ -1,0 +1,17 @@
+{
+  "note": "Nhóm Tinh Hà là nhân vật tự thiết kế (phong cách concert nhóm nam), luôn biểu diễn. Anh Trai chỉ xuất hiện 3s ở donate Tier 3/4. Để trống image thì vẽ hình bóng (silhouette) không nhận diện được. Chỉ điền ảnh/tên thật của nghệ sĩ khi đã được đơn vị quản lý cho phép.",
+  "tinhHa": [
+    { "name": "Tinh Thiên", "hair": "#f8fafc", "outfit": "#7c3aed", "accent": "#facc15" },
+    { "name": "Tinh Vũ",    "hair": "#1e293b", "outfit": "#db2777", "accent": "#f9a8d4" },
+    { "name": "Tinh Lam",   "hair": "#38bdf8", "outfit": "#111827", "accent": "#e5e7eb", "mic": true },
+    { "name": "Tinh Dương", "hair": "#f97316", "outfit": "#0f766e", "accent": "#5eead4" },
+    { "name": "Tinh Khải",  "hair": "#a78bfa", "outfit": "#1d4ed8", "accent": "#fde68a" }
+  ],
+  "anhTrai": [
+    { "name": "Anh Trai", "image": "" },
+    { "name": "Anh Trai", "image": "" },
+    { "name": "Anh Trai", "image": "" },
+    { "name": "Anh Trai", "image": "" },
+    { "name": "Anh Trai", "image": "" }
+  ]
+}

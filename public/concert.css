@@ -1,0 +1,103 @@
+:root {
+  --pink: #f472b6;
+  --gold: #facc15;
+  --glass: rgba(12, 8, 32, 0.55);
+  --glass-b: rgba(255, 255, 255, 0.16);
+  --font: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+/* html = cửa sổ nguồn (kích thước bất kỳ); body = khung game 1080x1920, fit.js co giãn cho vừa */
+html { margin: 0; width: 100vw; height: 100vh; overflow: hidden; background: transparent; }
+body { margin: 0; position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; transform-origin: 0 0;
+       font-family: var(--font); color: #fff; background: transparent; }
+canvas { position: absolute; inset: 0; }
+
+/* ---------- Header ---------- */
+#top { position: absolute; top: 26px; left: 30px; right: 30px; z-index: 5; }
+#np { position: relative; display: flex; align-items: center; gap: 18px; padding: 14px 22px 22px; border-radius: 30px;
+      background: linear-gradient(135deg, rgba(76,29,149,.7), rgba(190,24,93,.55)); border: 2px solid var(--glass-b); backdrop-filter: blur(12px); }
+#np .disc { width: 70px; height: 70px; border-radius: 50%; display: grid; place-items: center; font-size: 36px; flex: none;
+            background: conic-gradient(#f472b6, #a78bfa, #38bdf8, #facc15, #f472b6); animation: spin 3s linear infinite; box-shadow: 0 0 30px #f472b688; }
+.np-txt { min-width: 0; flex: 1; }
+.np-title { font-size: 34px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.np-sub { font-size: 22px; font-weight: 700; color: #fbcfe8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.np-time { font-size: 28px; font-weight: 800; opacity: .9; }
+.np-bar { position: absolute; left: 22px; right: 22px; bottom: 9px; height: 6px; border-radius: 3px; background: #ffffff22; overflow: hidden; }
+.np-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #facc15, #f472b6); transition: width 1s linear; }
+
+#row2 { display: flex; gap: 14px; margin-top: 12px; align-items: stretch; }
+#hype { position: relative; flex: 1; height: 54px; border-radius: 27px; overflow: hidden; background: var(--glass); border: 2px solid var(--glass-b); }
+.hype-fill { position: absolute; inset: 0 auto 0 0; width: 0; transition: width .5s;
+             background: linear-gradient(90deg, #f97316, #ef4444, #ec4899, #a855f7); background-size: 200% 100%; animation: flow 3s linear infinite; }
+.hype-lbl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 24px; font-weight: 800; text-shadow: 0 2px 6px #000a; }
+#hype.hot { box-shadow: 0 0 0 3px #f97316, 0 0 30px #f97316; }
+#topFans { display: flex; gap: 8px; align-items: center; padding: 0 14px; border-radius: 27px; background: var(--glass); border: 2px solid var(--glass-b); }
+#topFans .tf { position: relative; }
+#topFans .tf .av { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; font-weight: 900; font-size: 20px; border: 3px solid var(--gold); }
+#topFans .tf b { position: absolute; bottom: -6px; right: -6px; font-size: 18px; }
+#topFans .lbl { font-size: 20px; font-weight: 800; color: var(--gold); margin-right: 4px; }
+
+/* ---------- PiP Tier 1 ---------- */
+#pip { position: absolute; top: 250px; right: 26px; z-index: 8; display: flex; flex-direction: column; gap: 12px; }
+.pipi { display: flex; align-items: center; gap: 12px; padding: 10px 18px 10px 10px; border-radius: 60px; background: var(--glass);
+        border: 3px solid var(--pink); box-shadow: 0 0 24px #f472b6aa; animation: pipIn .3s ease-out; }
+.pipi .av { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; font-size: 36px; font-weight: 900; }
+.pipi .t { font-size: 24px; font-weight: 800; max-width: 230px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pipi .g { font-size: 19px; color: #fbcfe8; }
+.pipi.out { animation: pipOut .35s ease-in forwards; }
+
+/* ---------- Toast ---------- */
+#toasts { position: absolute; top: 240px; left: 30px; z-index: 7; display: flex; flex-direction: column; gap: 10px; max-width: 640px; }
+.toast { display: flex; align-items: center; gap: 12px; padding: 10px 20px 10px 10px; border-radius: 40px; font-size: 24px; font-weight: 700;
+         background: var(--glass); border: 2px solid var(--glass-b); animation: pipIn .3s ease-out; }
+.toast .av { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; font-weight: 900; flex: none; }
+.toast.follow { border-color: #38bdf8; }
+.toast.song { border-color: var(--gold); }
+
+/* ---------- Thảm đỏ VIP ---------- */
+#carpet { position: absolute; left: 0; right: 0; top: 760px; height: 130px; z-index: 9; display: none; align-items: center; justify-content: center; gap: 20px;
+          background: linear-gradient(90deg, transparent, #9f1239ee 15%, #be123cee 50%, #9f1239ee 85%, transparent);
+          border-top: 4px solid var(--gold); border-bottom: 4px solid var(--gold); font-size: 38px; font-weight: 900; text-shadow: 0 3px 10px #000; }
+#carpet.on { display: flex; animation: carpet 6s ease-in-out forwards; }
+#carpet .av { width: 96px; height: 96px; border-radius: 50%; border: 4px solid var(--gold); object-fit: cover; display: grid; place-items: center; }
+
+/* ---------- MC ảo ---------- */
+#mc { position: absolute; left: 30px; bottom: 150px; z-index: 7; max-width: 700px; padding: 14px 24px; border-radius: 28px; font-size: 26px; font-weight: 800;
+      background: linear-gradient(135deg, #312e81ee, #6d28d9ee); border: 2px solid #c4b5fd; opacity: 0; transform: translateY(20px); transition: all .4s; }
+#mc.on { opacity: 1; transform: none; }
+#mc small { display: block; font-size: 18px; color: #c4b5fd; }
+
+/* ---------- Flash chụp ảnh + khung polaroid (Tier 4) ---------- */
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 12; }
+#flash.on { animation: flash .6s ease-out; }
+#polaroid { position: absolute; left: 70px; right: 70px; top: 560px; height: 520px; z-index: 11; pointer-events: none; opacity: 0; }
+#polaroid .pl-in { position: absolute; inset: 0; border: 22px solid #fff; border-bottom-width: 90px; border-radius: 8px; box-shadow: 0 20px 60px #000a; }
+#polaroid #plText { position: absolute; left: 0; right: 0; bottom: -78px; text-align: center; color: #1f2937; font-size: 34px; font-weight: 900; }
+#polaroid.on { animation: polaroid 2.4s ease-out forwards; }
+
+/* ---------- Footer ---------- */
+#foot { position: absolute; left: 30px; right: 30px; bottom: 24px; z-index: 6; }
+#vote { display: none; padding: 14px 18px; border-radius: 26px; background: var(--glass); border: 2px solid var(--gold); }
+#vote.on { display: block; animation: pipIn .3s ease-out; }
+#vote .vh { display: flex; justify-content: space-between; font-size: 24px; font-weight: 900; color: var(--gold); margin-bottom: 8px; }
+#vote .vo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+#vote .op { position: relative; padding: 10px 12px; border-radius: 16px; background: #ffffff14; overflow: hidden; }
+#vote .op i { position: absolute; inset: 0 auto 0 0; background: #facc1544; transition: width .5s; }
+#vote .op b { position: relative; font-size: 22px; color: var(--gold); }
+#vote .op span { position: relative; display: block; font-size: 21px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#vote .op em { position: relative; font-style: normal; font-size: 19px; opacity: .8; }
+#help { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+#vote.on + #help { display: none; }
+.cmd { padding: 10px 18px; border-radius: 22px; background: var(--glass); border: 2px solid var(--glass-b); font-size: 22px; font-weight: 700; }
+.cmd b { color: var(--gold); }
+
+#soundHint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 30; padding: 20px 34px; border-radius: 20px;
+             background: #000c; font-size: 30px; display: none; cursor: pointer; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes flow { to { background-position: -200% 0; } }
+@keyframes pipIn { from { opacity: 0; transform: translateX(40px) scale(.8); } to { opacity: 1; transform: none; } }
+@keyframes pipOut { to { opacity: 0; transform: translateX(40px) scale(.8); } }
+@keyframes carpet { 0% { transform: translateX(-100%); } 12%, 88% { transform: none; } 100% { transform: translateX(100%); } }
+@keyframes flash { 0% { opacity: .95; } 100% { opacity: 0; } }
+@keyframes polaroid { 0% { opacity: 0; transform: scale(1.15) rotate(-3deg); } 15% { opacity: 1; transform: scale(1) rotate(-2deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: scale(.9) rotate(-2deg); } }

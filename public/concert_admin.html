@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Concert Tinh Hà Say Hi - Admin</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #111827; color: #e5e7eb; padding: 24px; max-width: 900px; }
+  h2 { margin-top: 28px; border-bottom: 1px solid #374151; padding-bottom: 6px; }
+  button { padding: 10px 16px; margin: 4px; border: 0; border-radius: 8px; background: #374151; color: #fff; cursor: pointer; font-size: 15px; }
+  button:hover { background: #4b5563; }
+  input, select { padding: 8px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: #fff; font-size: 15px; }
+  input[type=number] { width: 90px; }
+  .info { background: #1f2937; padding: 12px 16px; border-radius: 8px; line-height: 1.7; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  td, th { padding: 6px; border-bottom: 1px solid #374151; text-align: left; }
+  .muted { color: #9ca3af; }
+  .warn { color: #fbbf24; }
+  .t1 { background: #9d174d; } .t2 { background: #075985; } .t3 { background: #6d28d9; } .t4 { background: #a16207; }
+  #auto { background: #065f46; }
+</style>
+</head>
+<body>
+<h1>🎤 Concert Tinh Hà Say Hi · Bảng điều khiển MC</h1>
+<p>Overlay OBS: <code>http://localhost:3000/concert.html</code> (thêm <code>?bg=0</code> để bỏ nền trời, ghép camera MC phía sau)</p>
+<div class="info" id="info">Đang tải...</div>
+
+<h2>🎵 Nhạc</h2>
+<div>
+  <button onclick="admin('next')">⏭ Chuyển bài ngay</button>
+  Playlist: <select id="plSel"></select>
+  <button onclick="admin('playlist', val('plSel'))">▶ Phát playlist này (chế độ tay)</button>
+  <button onclick="admin('music-mode','auto')">🔁 Tự động xoay playlist</button>
+</div>
+<div>
+  Mỗi bài phát tối đa <input type="number" id="maxSec" min="20" max="600"> giây
+  <button onclick="admin('max-track-sec', Number(val('maxSec')))">Lưu</button>
+  <button onclick="admin('reload-playlists').then(load)">🔄 Nạp lại playlists.json</button>
+</div>
+<div>
+  Âm lượng: <input type="range" id="vol" min="0" max="1" step="0.05" value="0.6">
+  <button onclick="music(true)">🔊 Bật</button><button onclick="music(false)">🔇 Tắt</button>
+</div>
+<p class="muted">Bài remix dạng file chỉ được phát khi <code>license.allowedForLive</code> là <code>true</code> và file có trong <code>public/</code>. Bài bị bỏ qua:</p>
+<table id="skipped"></table>
+
+<h2>🎁 Mức donate (xu)</h2>
+<div>
+  Tier 2 từ <input type="number" id="t2" min="2"> · Tier 3 từ <input type="number" id="t3" min="3"> · Tier 4 từ <input type="number" id="t4" min="4">
+  <button onclick="admin('tiers', [Number(val('t2')), Number(val('t3')), Number(val('t4'))]).then(load)">Lưu</button>
+</div>
+<div>
+  Anh Trai xuất hiện <input type="number" id="anhSec" min="1" max="10" step="0.5"> giây (Tier 3/4)
+  <button onclick="admin('anhtrai-sec', Number(val('anhSec'))).then(load)">Lưu</button>
+  <button onclick="admin('stage-clear')">🧹 Mời khách xuống sân khấu</button>
+</div>
+
+<h2>🤖 Bot Fan</h2>
+<p class="muted">Bot chỉ hiển thị trong game, không phải tài khoản TikTok, không gửi comment/quà, không vào bảng xếp hạng.</p>
+<button onclick="admin('bots', true).then(load)">Bật Bot Fan</button>
+<button onclick="admin('bots', false).then(load)">Tắt Bot Fan</button>
+
+<h2>🔥 Sân khấu</h2>
+<button onclick="admin('hype')">💥 Bùng nổ (Encore)</button>
+<button onclick="admin('reset')">🔄 Làm mới phiên (xóa khán giả, khách mời)</button>
+<div style="margin-top:8px">
+  <input id="sayText" style="width:560px" placeholder="MC gõ câu để giọng đọc phát lên live">
+  <button onclick="post('/api/admin/say',{text:val('sayText')})">🗣 Đọc</button>
+</div>
+
+<h2>🏆 Top Fan phiên này</h2>
+<table id="top"></table>
+<h2>🏛️ Bảng vàng (mọi phiên)</h2>
+<table id="hof"></table>
+
+<h2>🧪 Giả lập (test không cần live)</h2>
+Tên viewer: <input id="name" value="viewer_01">
+<div>
+  <button onclick="sim('member')">🚪 Vào phòng</button>
+  <button onclick="sim('chat',{comment:'!vao'})">🎫 !vao</button>
+  <button onclick="sim('chat',{comment:'!light '+['hong','xanh','vang','tim'][Math.floor(Math.random()*4)]})">💡 !light</button>
+  <button onclick="sim('chat',{comment:'Concert đỉnh quá!'})">💬 Comment</button>
+  <button onclick="sim('chat',{comment:'!bai '+(1+Math.floor(Math.random()*3))})">🎶 !bai ngẫu nhiên</button>
+  <button onclick="sim('like',{value:15})">❤️ 15 tim</button>
+  <button onclick="sim('follow')">➕ Follow</button>
+  <button onclick="sim('share')">↗ Share</button>
+</div>
+<div>
+  <button class="t1" onclick="sim('gift',{value:1,gift:'Hoa Hồng'})">🌹 1 xu (Tier 1)</button>
+  <button class="t1" onclick="sim('gift',{value:5,gift:'Hoa Hồng',streak:1500})">🌹 combo 5 xu (zoom ngay, chốt sau 1,5s)</button>
+  <button class="t2" onclick="sim('gift',{value:10,gift:'Kem'})">🍦 10 xu (Tier 2)</button>
+  <button class="t3" onclick="sim('gift',{value:100,gift:'Corgi'})">🐶 100 xu (Tier 3)</button>
+  <button class="t4" onclick="sim('gift',{value:500,gift:'Sư Tử'})">🦁 500 xu (Tier 4)</button>
+</div>
+<div><button id="auto" onclick="toggleAuto()">▶ Bật giả lập người xem đông (chỉ để test)</button>
+<span class="muted">Giả lập gửi sự kiện như người xem thật. Không dùng khi đang live.</span></div>
+
+<script>
+const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+const admin = (cmd, arg) => post('/api/admin/' + cmd, { arg });
+const val = (id) => document.getElementById(id).value;
+const sim = (type, extra = {}) => post('/api/sim', { type, name: val('name'), ...extra });
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const music = (on) => admin('music', { on, volume: Number(val('vol')) });
+document.getElementById('vol').oninput = () => music(true);
+
+let first = true;
+async function load() {
+  const d = await fetch('/api/admin/info').then((r) => r.json());
+  const ttsLabel = { browser: 'Giọng trình duyệt', fpt: 'FPT.AI', azure: 'Azure Speech' }[d.tts];
+  const np = d.nowPlaying;
+  const a = d.audience;
+  document.getElementById('info').innerHTML =
+    `🎵 Đang phát: <b>${esc(np?.title || 'không có bài')}</b> (${esc(np?.playlistId || '')}, còn ${np?.remainingSec ?? 0}s) · chế độ <b>${d.musicMode === 'auto' ? 'tự động' : 'tay'}</b><br>` +
+    `👥 Khán giả thật: <b>${a.real}</b> · Bot Fan: <b>${a.bots}</b> (${d.botsEnabled ? 'bật' : 'tắt'}, mức hoạt động ${Math.round(d.botLevel * 100)}%)<br>` +
+    `🔥 Độ cháy: <b>${d.hype}/${d.hypeGoal}</b> · ⭐ Khách mời trên sân khấu: <b>${d.stageGuests.map((g) => esc(g.name)).join(', ') || 'chưa có'}</b> · Hàng đợi focus: ${d.focusQueue}<br>` +
+    `🎁 Tier: ${d.tiers.map((t) => `T${t.tier} ≥${t.min}`).join(' · ')} · Anh Trai ${d.anhTraiSec}s · 🗣 ${ttsLabel}`;
+  if (first) {
+    document.getElementById('plSel').innerHTML = d.playlists.map((p) => `<option value="${esc(p.id)}">${esc(p.name)} (${p.count} bài)</option>`).join('');
+    document.getElementById('maxSec').value = d.maxTrackSec;
+    document.getElementById('t2').value = d.tiers[1].min;
+    document.getElementById('t3').value = d.tiers[2].min;
+    document.getElementById('t4').value = d.tiers[3].min;
+    document.getElementById('anhSec').value = d.anhTraiSec;
+    first = false;
+  }
+  document.getElementById('skipped').innerHTML = d.skipped.length
+    ? d.skipped.map((s) => `<tr><td>${esc(s.title || s.trackId)}</td><td class="warn">${esc(s.reason)}</td></tr>`).join('')
+    : '<tr><td class="muted">Không có</td></tr>';
+  document.getElementById('top').innerHTML = d.topFans.length
+    ? d.topFans.map((f, i) => `<tr><td>${i + 1}</td><td>${esc(f.name)}</td><td>${f.diamonds} xu</td></tr>`).join('')
+    : '<tr><td class="muted">Chưa có</td></tr>';
+  document.getElementById('hof').innerHTML = d.hallOfFame.length
+    ? '<tr><th>Tên</th><th>Tổng xu</th><th>Lần lên sân khấu</th><th>Danh hiệu</th></tr>' +
+      d.hallOfFame.map((f) => `<tr><td>${esc(f.name)}</td><td>${f.diamonds}</td><td>${f.stageCount}</td><td>${esc(f.title)}</td></tr>`).join('')
+    : '<tr><td class="muted">Chưa có</td></tr>';
+}
+load();
+setInterval(load, 3000);
+
+let autoTimer = null;
+function toggleAuto() {
+  const btn = document.getElementById('auto');
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; btn.textContent = '▶ Bật giả lập người xem đông (chỉ để test)'; return; }
+  btn.textContent = '⏸ Tắt giả lập';
+  const lines = ['Hay quá!', 'Quẩy lên!', 'Yêu Tinh Hà', 'Bài này cuốn ghê', 'Lightstick hồng nè'];
+  autoTimer = setInterval(() => {
+    const name = 'test_' + Math.floor(Math.random() * 150);
+    const r = Math.random();
+    if (r < 0.08) post('/api/sim', { type: 'chat', name, comment: '!vao' });
+    else if (r < 0.12) post('/api/sim', { type: 'chat', name, comment: '!light ' + ['hong', 'xanh', 'vang', 'tim'][Math.floor(Math.random() * 4)] });
+    else if (r < 0.2) post('/api/sim', { type: 'chat', name, comment: lines[Math.floor(Math.random() * lines.length)] });
+    else if (r < 0.24) post('/api/sim', { type: 'chat', name, comment: '!bai ' + (1 + Math.floor(Math.random() * 3)) });
+    else if (r < 0.85) post('/api/sim', { type: 'like', name, value: 15 });
+    else if (r < 0.9) post('/api/sim', { type: 'member', name });
+    else if (r < 0.985) post('/api/sim', { type: 'gift', name, value: [1, 1, 5, 10][Math.floor(Math.random() * 4)], gift: 'Hoa Hồng' });
+    else post('/api/sim', { type: 'gift', name, value: [100, 500][Math.floor(Math.random() * 2)], gift: 'Quà lớn' });
+  }, 300);
+}
+</script>
+</body>
+</html>

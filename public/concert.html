@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Đi Concert Tinh Hà Say Hi - Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="concert.css">
+<script src="fit.js"></script>
+</head>
+<body>
+<!-- Toàn bộ sân khấu + khán giả vẽ trên canvas. ?bg=0 để bỏ nền trời đêm (ghép camera MC phía sau). -->
+<canvas id="c" width="1080" height="1920"></canvas>
+
+<!-- ===== Header: bài đang phát + Độ cháy ===== -->
+<header id="top">
+  <div id="np">
+    <div class="disc">🎵</div>
+    <div class="np-txt">
+      <div class="np-title" id="npTitle">Đang chuẩn bị nhạc...</div>
+      <div class="np-sub" id="npSub">Đi Concert Tinh Hà Say Hi</div>
+    </div>
+    <div class="np-time" id="npTime">0:00</div>
+    <div class="np-bar"><i id="npBar"></i></div>
+  </div>
+  <div id="row2">
+    <div id="hype">
+      <div class="hype-fill" id="hypeFill"></div>
+      <div class="hype-lbl"><span>🔥 Độ cháy sân khấu</span><b id="hypeTxt">0%</b></div>
+    </div>
+    <div id="topFans"></div>
+  </div>
+</header>
+
+<!-- Ô zoom nhỏ cho donate Tier 1 khi camera đang bận -->
+<div id="pip"></div>
+<div id="toasts"></div>
+<div id="carpet"></div>
+<div id="mc"></div>
+<div id="flash"></div>
+<div id="polaroid"><div class="pl-in"><div id="plText"></div></div></div>
+
+<!-- ===== Footer: vote bài / hướng dẫn lệnh ===== -->
+<footer id="foot">
+  <div id="vote"></div>
+  <div id="help"></div>
+</footer>
+<div id="soundHint">🔈 Bấm vào màn hình để bật âm thanh</div>
+
+<script type="module" src="concert.js"></script>
+</body>
+</html>

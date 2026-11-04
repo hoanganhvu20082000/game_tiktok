@@ -84,6 +84,38 @@ Mỗi buổi live ghi chỉ số (% người có dây, % dây được nối l�
 
 Kiểm tra luật chơi: chạy server với `TREE_WIRE_COOLDOWN_MS=0 TREE_LIT_HOLD_SEC=2 TREE_GOAL_MIN=100000 PORT=3056 node server.js --mode=tree`, rồi `PORT=3056 node scripts/tree_test.js` (30 kiểm tra).
 
+## 1c. Chế độ Concert: 🎤 Đi Concert Tinh Hà Say Hi
+
+```bash
+npm run concert                              # giả lập
+node server.js <tiktok_user> --mode=concert  # live thật
+```
+Overlay `http://localhost:3000/concert.html` (`?bg=0` bỏ nền trời để ghép camera MC) · Admin `http://localhost:3000/concert_admin.html`.
+Thiết kế: [docs/tai_lieu_thiet_ke_concert_tinh_ha_say_hi_tiktok_live.md](docs/tai_lieu_thiet_ke_concert_tinh_ha_say_hi_tiktok_live.md).
+
+**Sân khấu.** Nhóm **Tinh Hà** (5 nhân vật chibi tự thiết kế, phong cách concert nhóm nam) luôn biểu diễn, nhảy theo BPM của bài. **Anh Trai** chỉ xuất hiện khoảng 3s khi có donate Tier 3 hoặc Tier 4. Mặc định Anh Trai là hình bóng viền vàng không nhận diện được; chỉ điền ảnh vào `public/assets/concert/manifest.json` khi đã được đơn vị quản lý nghệ sĩ cho phép.
+
+**Donate 4 cấp** (chỉnh ngưỡng trên admin; quà của 1 người trong 10s được cộng dồn để lên cấp cao hơn):
+
+| Cấp | Xu | Focus |
+|---|---|---|
+| Tier 1 | 1–9 | Camera zoom ngay vào avatar (quà combo zoom từ gói đầu tiên). Camera đang bận thì hiện ô PiP góc phải |
+| Tier 2 | 10–99 | Spotlight chiếu xuống chỗ đứng, avatar lên màn LED, khán giả xung quanh chỉ lightstick về phía bạn |
+| Tier 3 | 100–499 | 1 Anh Trai xuất hiện 3s ở mép sân khấu bắn tim về phía bạn, bạn được chuyển lên khu VIP |
+| Tier 4 | ≥ 500 | Tắt đèn, spotlight vàng, bạn bay lên sân khấu, cả nhóm Anh Trai ra chào 3s (chụp ảnh lưu niệm), nhạc nhảy tới điệp khúc, bạn nhảy cùng Tinh Hà tới hết bài (tối đa 3 khách mời) |
+
+Hàng đợi: Tier 4 cắt ngang mọi hiệu ứng (hiệu ứng Tier 2/3 bị cắt được phát lại sau), mỗi lúc chỉ 1 lượt Anh Trai xuất hiện.
+
+**Khán giả & lệnh:** vào phòng = ghế khán đài · `!vao` xuống khu GA · `!light hong|xanh|vang|tim|trang|do` đổi màu lightstick · `!bai 1/2/3` vote bài tiếp theo (30s cuối bài) · tim/share/follow/quà cộng **Độ cháy**, đầy thanh thì **Bùng nổ** và chuyển sang playlist Encore. Tổng xu trong phiên ≥100 vào VIP; Top 3 phiên và fan đã tặng ≥500 xu (mọi phiên) vào SVIP và được chào thảm đỏ khi vào phòng. Bảng vàng lưu ở `data/concert_fans.json`.
+
+**Bot Fan:** khán giả ảo lấp ghế trống, nhảy theo nhạc, hô theo điệp khúc, phản ứng khi có người tặng quà, có MC ảo giới thiệu bài. Bot tự giảm hoạt động khi người thật tương tác nhiều. Bot chỉ có trong hình ảnh overlay, không phải tài khoản TikTok, không gửi comment/quà, không vào Top Fan hay bảng vàng (viền xám để phân biệt).
+
+**Nhạc remix chuyển liên tục** (`public/assets/concert/playlists.json`): 4 playlist (Mở màn, Điệp khúc, Chill, Encore), tự xoay vòng, mỗi bài tối đa 120s (`CONCERT_MAX_TRACK_SEC`), crossfade 3s, không lặp 5 bài gần nhất.
+- Mặc định là các bản remix EDM/house/trap/chill do trình duyệt **tự sinh bằng Web Audio** (`type: "synth"`), không dùng bản ghi của ai.
+- Muốn phát file remix: chép mp3 vào `public/assets/concert/audio/`, thêm bài `type: "file"` với `bpm`, `chorusStart`, `durationSec` và `license.allowedForLive: true` (kèm `license.proof`). **Remix của bài có bản quyền vẫn thuộc quyền tác giả/hãng gốc** và vẫn có thể bị TikTok tắt tiếng; chỉ thêm bài có giấy phép. Bài thiếu giấy phép hoặc thiếu file bị bỏ qua, admin hiện lý do.
+
+Kiểm tra luật chơi: `PORT=3057 CONCERT_MAX_TRACK_SEC=40 node server.js --mode=concert`, rồi `PORT=3057 node scripts/concert_test.js`.
+
 ## 2. Chạy thử
 
 ```bash

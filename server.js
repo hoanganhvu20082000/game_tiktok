@@ -7,6 +7,7 @@ import { TikTokLiveConnection, WebcastEvent } from 'tiktok-live-connector';
 import { CONFIG } from './config.js';
 import { Game } from './game.js';
 import { TreeGame } from './tree_game.js';
+import { ConcertGame } from './concert_game.js';
 import { EVENTS } from './events.js';
 import { synthesize, ttsProvider } from './tts.js';
 
@@ -14,10 +15,14 @@ import { synthesize, ttsProvider } from './tts.js';
 //   node server.js                            -> Phóng Sanh Chim, chế độ giả lập (bấm nút trên /admin.html)
 //   node server.js <tiktok_user>              -> Phóng Sanh Chim, nối phòng live thật
 //   node server.js [tiktok_user] --mode=tree  -> Cây Thông Kết Nối (overlay /tree.html, admin /tree_admin.html)
+//   node server.js [tiktok_user] --mode=concert -> Đi Concert Tinh Hà Say Hi (overlay /concert.html, admin /concert_admin.html)
 const args = process.argv.slice(2);
 const MODE = (args.find((a) => a.startsWith('--mode=')) || '--mode=bird').split('=')[1];
 const tiktokUser = args.find((a) => !a.startsWith('--'));
-const PAGES = MODE === 'tree' ? { overlay: 'tree.html', admin: 'tree_admin.html' } : { overlay: 'overlay.html', admin: 'admin.html' };
+const PAGES = {
+  tree: { overlay: 'tree.html', admin: 'tree_admin.html', name: 'Cây Thông Kết Nối' },
+  concert: { overlay: 'concert.html', admin: 'concert_admin.html', name: 'Đi Concert Tinh Hà Say Hi' },
+}[MODE] || { overlay: 'overlay.html', admin: 'admin.html', name: 'Phóng Sanh Chim' };
 
 const app = express();
 app.use(express.static('public'));
@@ -49,7 +54,9 @@ async function say(text, priority = 3) {
   }
 }
 
-const game = MODE === 'tree' ? new TreeGame(broadcast, say) : new Game(broadcast, say);
+const game = MODE === 'tree' ? new TreeGame(broadcast, say)
+  : MODE === 'concert' ? new ConcertGame(broadcast, say)
+  : new Game(broadcast, say);
 
 // ---------- Admin API (chỉ lắng nghe localhost, xem listen bên dưới) ----------
 app.post('/api/admin/:cmd', (req, res) => {
@@ -77,13 +84,19 @@ app.post('/api/admin/say', (req, res) => {
 
 // Giả lập sự kiện để test overlay khi chưa live
 app.post('/api/sim', (req, res) => {
-  const { type, name = 'tester', value = 1, comment = '' } = req.body || {};
+  const { type, name = 'tester', value = 1, comment = '', gift = 'Quà test', streak = 0 } = req.body || {};
   const user = { uniqueId: name, nickname: name, avatar: '' };
   if (type === 'chat') game.onChat(user, comment);
   if (type === 'like') game.onLike(user, Number(value));
   if (type === 'follow') game.onFollow(user);
   if (type === 'share') game.onShare(user);
-  if (type === 'gift') game.onGift(user, 'Quà test', Number(value));
+  if (type === 'gift') {
+    // streak > 0: giả lập quà combo, gói đầu tiên đến trước (chưa chốt), streak chốt sau `streak` ms
+    if (Number(streak) > 0 && game.onGiftStreak) {
+      game.onGiftStreak(user, String(gift));
+      setTimeout(() => game.onGift(user, String(gift), Number(value)), Number(streak));
+    } else game.onGift(user, String(gift), Number(value));
+  }
   if (type === 'member') game.onMember(user);
   res.json({ ok: true });
 });
@@ -109,7 +122,11 @@ function startTikTok(username) {
   conn.on(WebcastEvent.GIFT, (d) => {
     const giftType = d.giftDetails?.giftType;
     // Quà streak (giftType 1): chỉ xử lý khi streak kết thúc để không đếm trùng
-    if (giftType === 1 && !d.repeatEnd) return;
+    // Riêng Concert: gói đầu tiên của streak được báo trước để zoom Tier 1 ngay lập tức
+    if (giftType === 1 && !d.repeatEnd) {
+      if (game.onGiftStreak) game.onGiftStreak(toUser(d.user), d.giftDetails?.giftName || 'Quà');
+      return;
+    }
     const perGift = d.giftDetails?.diamondCount ?? d.extendedGiftInfo?.diamond_count ?? 1;
     const diamonds = perGift * (d.repeatCount || 1);
     game.onGift(toUser(d.user), d.giftDetails?.giftName || 'Quà', diamonds);
@@ -138,7 +155,7 @@ function startTikTok(username) {
 }
 
 server.listen(CONFIG.port, '127.0.0.1', () => {
-  console.log(`Chế độ : ${MODE === 'tree' ? 'Cây Thông Kết Nối' : 'Phóng Sanh Chim'}`);
+  console.log(`Chế độ : ${PAGES.name}`);
   console.log(`Overlay: http://localhost:${CONFIG.port}/${PAGES.overlay} (Browser Source 1080x1920)`);
   console.log(`Admin  : http://localhost:${CONFIG.port}/${PAGES.admin}`);
   console.log(`Giọng đọc: ${ttsProvider()}`);

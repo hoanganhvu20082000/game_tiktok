@@ -1,0 +1,39 @@
+{
+  "playlists": [
+    {
+      "playlistId": "mo-man",
+      "name": "Mở màn sôi động",
+      "tracks": [
+        { "trackId": "synth-mm-01", "title": "Tinh Hà Opening Beat", "remixer": "Nhạc tự sinh", "type": "synth", "style": "edm", "bpm": 126, "key": 0, "seed": 11, "durationSec": 180, "chorusStart": 32, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-mm-02", "title": "Say Hi Stage Intro", "remixer": "Nhạc tự sinh", "type": "synth", "style": "house", "bpm": 124, "key": 5, "seed": 23, "durationSec": 180, "chorusStart": 32, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-mm-03", "title": "Lightstick Up", "remixer": "Nhạc tự sinh", "type": "synth", "style": "edm", "bpm": 128, "key": 7, "seed": 37, "durationSec": 180, "chorusStart": 32, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } }
+      ]
+    },
+    {
+      "playlistId": "diep-khuc",
+      "name": "Điệp khúc bùng nổ",
+      "tracks": [
+        { "trackId": "synth-dk-01", "title": "Galaxy Drop", "remixer": "Nhạc tự sinh", "type": "synth", "style": "edm", "bpm": 130, "key": 2, "seed": 41, "durationSec": 180, "chorusStart": 24, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-dk-02", "title": "Tinh Hà Bounce", "remixer": "Nhạc tự sinh", "type": "synth", "style": "trap", "bpm": 140, "key": 9, "seed": 53, "durationSec": 180, "chorusStart": 24, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-dk-03", "title": "Fan Chant Anthem", "remixer": "Nhạc tự sinh", "type": "synth", "style": "edm", "bpm": 128, "key": 4, "seed": 67, "durationSec": 180, "chorusStart": 24, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-dk-04", "title": "Starlight Jump", "remixer": "Nhạc tự sinh", "type": "synth", "style": "house", "bpm": 126, "key": 11, "seed": 79, "durationSec": 180, "chorusStart": 24, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } }
+      ]
+    },
+    {
+      "playlistId": "chill",
+      "name": "Chill giữa giờ",
+      "tracks": [
+        { "trackId": "synth-ch-01", "title": "Midnight Say Hi", "remixer": "Nhạc tự sinh", "type": "synth", "style": "chill", "bpm": 96, "key": 3, "seed": 83, "durationSec": 180, "chorusStart": 40, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-ch-02", "title": "Ngân Hà Lo-fi", "remixer": "Nhạc tự sinh", "type": "synth", "style": "chill", "bpm": 90, "key": 8, "seed": 97, "durationSec": 180, "chorusStart": 40, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } }
+      ]
+    },
+    {
+      "playlistId": "encore",
+      "name": "Encore",
+      "tracks": [
+        { "trackId": "synth-ec-01", "title": "Encore Tinh Hà", "remixer": "Nhạc tự sinh", "type": "synth", "style": "edm", "bpm": 132, "key": 0, "seed": 101, "durationSec": 180, "chorusStart": 16, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } },
+        { "trackId": "synth-ec-02", "title": "Fireworks Remix", "remixer": "Nhạc tự sinh", "type": "synth", "style": "trap", "bpm": 145, "key": 6, "seed": 113, "durationSec": 180, "chorusStart": 16, "license": { "type": "ORIGINAL_GENERATED", "allowedForLive": true } }
+      ]
+    }
+  ]
+}

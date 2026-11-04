@@ -76,6 +76,51 @@ export const CONFIG = {
     chorus: { windowSec: 20, users: 8, light: 20, cooldownSec: 120, phrases: ['merry christmas', 'giang sinh vui ve', 'noel vui ve', 'giang sinh an lanh', 'merry xmas'] },
   },
 
+  // ---------- Chế độ Concert Tinh Hà Say Hi (--mode=concert) ----------
+  // Xem tai_lieu_thiet_ke_concert_tinh_ha_say_hi_tiktok_live.md
+  concert: {
+    // 4 cấp donate (xu = diamondCount x repeatCount). min của Tier 1 luôn là 1. Chỉnh được trên admin.
+    tiers: [
+      { tier: 1, min: 1,   effect: 'AVATAR_ZOOM', sec: 2.5 },
+      { tier: 2, min: 10,  effect: 'SPOTLIGHT',   sec: 3.5 },
+      { tier: 3, min: 100, effect: 'FAN_SERVICE', sec: 5 },
+      { tier: 4, min: 500, effect: 'STAGE_INVITE', sec: 10 },
+    ],
+    anhTraiAppearSec: 3,       // Anh Trai chỉ xuất hiện ở Tier 3/4, mỗi lần bấy nhiêu giây
+    anhTraiCount: 5,           // số Anh Trai (hình đặt trong public/assets/concert/manifest.json)
+    comboWindowSec: 10,        // cộng dồn quà của cùng 1 người trong cửa sổ này để lên tier cao hơn
+    maxStageGuests: 3,         // tối đa số fan Tier 4 đứng trên sân khấu cùng lúc
+    maxPip: 4,                 // số ô zoom nhỏ Tier 1 khi camera đang bận
+    vipZoneDiamonds: 100,      // tổng xu trong phiên >= mức này thì vào khu VIP
+    svipEntranceDiamonds: 500, // tổng xu các phiên >= mức này: chào đón + vào SVIP
+    // Sức chứa hiển thị mỗi khu (bot lấp chỗ trống, người thật luôn được ưu tiên)
+    zones: { svip: 6, vip: 16, ga: 60, stand: 120 },
+    lightColors: { hong: '#f472b6', xanh: '#38bdf8', vang: '#facc15', tim: '#a78bfa', trang: '#f8fafc', do: '#ef4444' },
+    chatCooldownMs: 3000,
+    // Thanh "Độ cháy" sân khấu
+    hype: { goal: 600, perLikes: 15, share: 3, follow: 5, perDiamond: 1, maxGift: 200, chat: 0.5 },
+    // Nhạc: chuyển bài liên tục
+    music: {
+      playlistFile: 'public/assets/concert/playlists.json',
+      maxTrackSec: Number(env.CONCERT_MAX_TRACK_SEC || 120),
+      crossfadeSec: 3,
+      noRepeatLast: 5,
+      voteWindowSec: 30,
+      voteOptions: 3,
+      autoRotateEvery: 3,      // chế độ tự động: đổi playlist sau mỗi N bài
+    },
+    // Bot Fan (NPC): chỉ hiển thị trong game, không phải tài khoản TikTok, không tính bảng xếp hạng
+    bots: {
+      enabled: true,
+      // mật độ hoạt động theo số sự kiện thật / phút
+      levels: [{ below: 10, level: 1 }, { below: 60, level: 0.5 }, { below: Infinity, level: 0.15 }],
+      chatGapSec: 3,
+      chatLines: ['Tinh Hà ơi nhìn em!', 'Bài này cuốn quá!', 'Quẩy lên nào!', 'Đỉnh nóc kịch trần!', 'Lightstick đâu rồi!',
+        'Nhảy đẹp quá trời!', 'Concert hay quá!', 'Ai đi concert cùng không?', 'Cháy quá anh em ơi!', 'Encore! Encore!'],
+      mcEveryTracks: 1,        // MC ảo giới thiệu bài mỗi N bài
+    },
+  },
+
   // Mùa thi (dương lịch, tháng-ngày). Mặc định bao kỳ thi tốt nghiệp THPT.
   examSeason: { from: '06-01', to: '07-10' },
 
